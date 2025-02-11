@@ -17,6 +17,9 @@ class VeritySourceLoginTable(NetBoxTable):
         linkify=True
     )
 
+    def render_password(self, value):
+        return "********"  # Always return a masked value
+
     class Meta(NetBoxTable.Meta):
         model = VeritySourceLogin
         fields = ('pk', 'verity_source', 'username', 'password', 'actions')

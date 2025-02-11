@@ -32,7 +32,12 @@
                     </tr>
                     <tr>
                         <th scope="row">Password</th>
-                        <td>{{ object.password }}</td>
+                        <td>
+                            <span id="toggle-password-span" class="hidden-password"
+                                data-password="{{ object.password }}">********</span>
+                            <button id="toggle-password" class="btn btn-sm btn-secondary">Show</button>
+                        </td>
+                        <!-- <td>{{ object.password }}</td> -->
                     </tr>
                 </table>
             </div>
@@ -66,6 +71,20 @@
         //         node.nodeValue = " Synching... ";
         //     }
         // });
+    });
+    // Add logic for the show/hide button for passwords
+    document.addEventListener("DOMContentLoaded", () => {
+        const toggle_password = document.getElementById("toggle-password");
+        toggle_password.addEventListener("click", () => {
+            let span = document.getElementById("toggle-password-span");
+            if (span.textContent === "********") {
+                span.textContent = span.getAttribute("data-password");
+                toggle_password.textContent = "Hide";
+            } else {
+                span.textContent = "********";
+                toggle_password.textContent = "Show";
+            }
+        });
     });
 </script>
 {% endblock %}
