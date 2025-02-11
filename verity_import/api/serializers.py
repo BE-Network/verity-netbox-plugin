@@ -6,27 +6,18 @@ from ipam.api.serializers import PrefixSerializer
 
 
 class NestedVeritySourceSerializer(WritableNestedSerializer):
-    # url = serializers.HyperlinkedIdentityField(
-    #     view_name='plugins-api:netbox_access_lists-api:veritysource-detail'
-    # )
 
     class Meta:
         model = VeritySource
         fields = ('id', 'url', 'display', 'verity_url')
 
 class NestedVeritySourceLoginSerializer(WritableNestedSerializer):
-    url = serializers.HyperlinkedIdentityField(
-        view_name='plugins-api:netbox_access_lists-api:veritysourcelogin-detail'
-    )
 
     class Meta:
         model = VeritySourceLogin
         fields = ('id', 'url', 'display', 'username')
 
 class NestedVerityLastSyncTimeSerializer(WritableNestedSerializer):
-    url = serializers.HyperlinkedIdentityField(
-        view_name='plugins-api:netbox_access_lists-api:veritylastsynctime-detail'
-    )
 
     class Meta:
         model = VerityLastSyncTime
@@ -34,10 +25,6 @@ class NestedVerityLastSyncTimeSerializer(WritableNestedSerializer):
 
 
 class VeritySourceSerializer(NetBoxModelSerializer):
-
-    # url = serializers.HyperlinkedIdentityField(
-    #     view_name='plugins-api:verity_import-api:veritysource-detail'
-    # )
 
     class Meta:
         model = VeritySource
@@ -49,9 +36,6 @@ class VeritySourceSerializer(NetBoxModelSerializer):
 
 class VeritySourceLoginSerializer(NetBoxModelSerializer):
 
-    url = serializers.HyperlinkedIdentityField(
-        view_name='plugins-api:verity_import-api:veritysourcelogin-detail'
-    )
     verity_source = NestedVeritySourceSerializer()
 
     class Meta:
@@ -64,9 +48,6 @@ class VeritySourceLoginSerializer(NetBoxModelSerializer):
 
 class VerityLastSyncTimeSerializer(NetBoxModelSerializer):
 
-    url = serializers.HyperlinkedIdentityField(
-        view_name='plugins-api:verity_import-api:veritylastsynctime-detail'
-    )
     verity_source = NestedVeritySourceSerializer()
 
     class Meta:

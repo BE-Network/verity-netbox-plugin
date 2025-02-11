@@ -466,6 +466,9 @@ class VeritySyncView(View):
                 }
             )
 
+            if "gateway" not in vnetc_config or "tenant" not in vnetc_config:
+                raise Exception("Verity plugin supports datacenter systems only!")
+
             self.compare_config(vnetc_config, self.get_netbox_config())
 
             models.VerityLastSyncTime(
@@ -476,7 +479,7 @@ class VeritySyncView(View):
             context["success"] = True
             context["message"] = "Import successfull!"
         except Exception as e:
-            context["success"] = True
+            context["success"] = False
             context["message"] = f"Import failed: {e}"
 
         return render(request, 'verity_import/sync_result.html', context)
