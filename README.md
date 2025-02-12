@@ -1,4 +1,4 @@
-# Verity Import Plugin
+# Verity Netbox Plugin
 
 ## Verity
 
