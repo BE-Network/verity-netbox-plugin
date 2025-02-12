@@ -8,7 +8,11 @@ from django.http import JsonResponse
 from django.utils.text import slugify
 from ipam.models import VLAN, RIR, ASN, IPAddress, VRF
 from extras.models import Tag
-from netbox_bgp.models import BGPSession
+try:
+    from netbox_bgp.models import BGPSession
+    PLUGIN_AVAILABLE = True
+except Exception:
+    PLUGIN_AVAILABLE = False
 from tenancy.models import Tenant
 from . import filtersets, forms, models, tables
 
@@ -455,31 +459,35 @@ class VeritySyncView(View):
             'message': None
         }
 
-        try:
-            vnetc_config = self.get_vnetc_config(
-                vnetc,
-                {
-                    "auth": {
-                        "username": username,
-                        "password": password
+        if PLUGIN_AVAILABLE:
+            try:
+                vnetc_config = self.get_vnetc_config(
+                    vnetc,
+                    {
+                        "auth": {
+                            "username": username,
+                            "password": password
+                        }
                     }
-                }
-            )
+                )
 
-            if "gateway" not in vnetc_config or "tenant" not in vnetc_config:
-                raise Exception("Verity plugin supports datacenter systems only!")
+                if "gateway" not in vnetc_config or "tenant" not in vnetc_config:
+                    raise Exception("Verity plugin supports datacenter systems only!")
 
-            self.compare_config(vnetc_config, self.get_netbox_config())
+                self.compare_config(vnetc_config, self.get_netbox_config())
 
-            models.VerityLastSyncTime(
-                timestamp=datetime.now(),
-                verity_source=models.VeritySource.objects.get(verity_url=vnetc)
-            ).save()
+                models.VerityLastSyncTime(
+                    timestamp=datetime.now(),
+                    verity_source=models.VeritySource.objects.get(verity_url=vnetc)
+                ).save()
 
-            context["success"] = True
-            context["message"] = "Import successfull!"
-        except Exception as e:
+                context["success"] = True
+                context["message"] = "Import successfull!"
+            except Exception as e:
+                context["success"] = False
+                context["message"] = f"Import failed: {e}"
+        else:
             context["success"] = False
-            context["message"] = f"Import failed: {e}"
+            context["message"] = f"Import failed: Netbox BGP plugin is not installed!"
 
         return render(request, 'verity_import/sync_result.html', context)
