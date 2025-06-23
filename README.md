@@ -20,7 +20,6 @@ This plugin communicates directly to the Verity REST API v2.x (OAS 3.0) via HTTP
 | -------------- | -------------- |
 | 4.2.x          | >=1.0          |
 
-
 ## Screenshots
 
 Coming soon.
@@ -28,3 +27,9 @@ Coming soon.
 ## Documentation
 
 Full documentation for this plugin can be found at [Verity Docs](https://docs.be-net.com).
+
+## Installation
+
+`
+pip install verity-import
+`
