@@ -8,8 +8,8 @@ class VeritySourceTable(NetBoxTable):
 
     def render_verity_url(self, record):
         if record.verity_url:
-            return format_html('<a href="{}" target="_blank">{}</a>', 
-                               record.verity_url, 
+            return format_html('<a href="{}" target="_blank">{}</a>',
+                               record.verity_url,
                                record.verity_url)
         return "N/A"
 
@@ -25,11 +25,11 @@ class VeritySourceLoginTable(NetBoxTable):
 
     def render_password(self, value):
         return "********"  # Always return a masked value
-    
+
     def render_verity_source(self, record):
         if record.verity_source and record.verity_source.verity_url:
-            return format_html('<a href="{}" target="_blank">{}</a>', 
-                               record.verity_source.verity_url, 
+            return format_html('<a href="{}" target="_blank">{}</a>',
+                               record.verity_source.verity_url,
                                record.verity_source.verity_url)
         return "N/A"
 
@@ -45,8 +45,8 @@ class VerityLastSyncTimeTable(NetBoxTable):
 
     def render_verity_source(self, record):
         if record.verity_source and record.verity_source.verity_url:
-            return format_html('<a href="{}" target="_blank">{}</a>', 
-                               record.verity_source.verity_url, 
+            return format_html('<a href="{}" target="_blank">{}</a>',
+                               record.verity_source.verity_url,
                                record.verity_source.verity_url)
         return "N/A"
 

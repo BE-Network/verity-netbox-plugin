@@ -18,7 +18,8 @@ This plugin communicates directly to the Verity REST API v2.x (OAS 3.0) via HTTP
 
 | Netbox Version | Plugin Version |
 | -------------- | -------------- |
-| 4.2.x          | >=1.0          |
+| 4.3.4 <        | 1.0            |
+| 4.3.4 >=       | >1.0           |
 
 ## Screenshots
 
@@ -28,8 +29,36 @@ Coming soon.
 
 Full documentation for this plugin can be found at [Verity Docs](https://docs.be-net.com).
 
+### Controllers
+
+Controllers URL must be the full address, including 'http://' or 'https://' at the beginning and a '/' at the end.
+
 ## Installation
 
-`
+Our plugin depends on [this](https://github.com/netbox-community/netbox-bgp) other plugin, so install it first, then:
+
+```bash
+source /opt/netbox/venv/bin/activate
 pip install verity-import
+```
+
+Enable the plugin in **/opt/netbox/netbox/netbox/configuration.py**:
+
+```python
+PLUGINS = ['verity_import']
+```
+
+Run the following commands to make sure NetBox data schema is up to date, always in the same virtual environment:
+
+```bash
+python3 /opt/netbox/netbox/manage.py migrate
+python3 /opt/netbox/netbox/manage.py collectstatic
+```
+
+Restart NetBox:
+
 `
+sudo systemctl restart netbox netbox-rq
+`
+
+In case the previous command does not work, reboot the machine.

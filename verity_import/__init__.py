@@ -5,7 +5,7 @@ class VerityImportConfig(PluginConfig):
     name = 'verity_import'
     verbose_name = 'Verity'
     description = 'Import a Verity system into Netbox'
-    version = '0.1'
+    version = '1.0.0'
     base_url = 'verity-import'
 
 

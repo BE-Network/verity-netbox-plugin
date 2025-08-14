@@ -88,7 +88,7 @@ class VeritySyncView(View):
                 vlan = VLAN(
                     vid=service["vlan"],
                     name=service_name
-                )                
+                )
                 if service["tenant"] is not None:
                     tenant = Tenant.objects.get(name=service["tenant"])
                     if tenant is None:
@@ -169,43 +169,43 @@ class VeritySyncView(View):
         return ip
 
     def get_session_params(self, gateway, vnetc_config):
-            params = {}
+        params = {}
 
-            if gateway["source_ip_address"]:
-                params["local_address"] = self.get_or_create_ip_address(gateway["source_ip_address"])
-            else:
-                try:
-                    switchpoint = self.find_switchpoint_from_gateway_name(gateway['name'], vnetc_config)
-                    params["local_address"] = self.get_or_create_ip_address(switchpoint["switch_router_id_ip_mask"])
-                except Exception:
-                    return None
-
-            if gateway["neighbor_ip_address"]:
-                params["remote_address"] = self.get_or_create_ip_address(gateway["neighbor_ip_address"])
-            else:
+        if gateway["source_ip_address"]:
+            params["local_address"] = self.get_or_create_ip_address(gateway["source_ip_address"])
+        else:
+            try:
+                switchpoint = self.find_switchpoint_from_gateway_name(gateway['name'], vnetc_config)
+                params["local_address"] = self.get_or_create_ip_address(switchpoint["switch_router_id_ip_mask"])
+            except Exception:
                 return None
 
-            if gateway["local_as_number"]:
-                params["local_as"] = self.get_or_create_asn(gateway["local_as_number"])
-            else:
-                try:
-                    switchpoint = self.find_switchpoint_from_gateway_name(gateway['name'], vnetc_config)
-                    params["local_as"] = self.get_or_create_asn(switchpoint["bgp_as_number"])
-                except Exception:
-                    return None
+        if gateway["neighbor_ip_address"]:
+            params["remote_address"] = self.get_or_create_ip_address(gateway["neighbor_ip_address"])
+        else:
+            return None
 
-            if gateway["neighbor_as_number"]:
-                params["remote_as"] = self.get_or_create_asn(gateway["neighbor_as_number"])
-            else:
+        if gateway["local_as_number"]:
+            params["local_as"] = self.get_or_create_asn(gateway["local_as_number"])
+        else:
+            try:
+                switchpoint = self.find_switchpoint_from_gateway_name(gateway['name'], vnetc_config)
+                params["local_as"] = self.get_or_create_asn(switchpoint["bgp_as_number"])
+            except Exception:
                 return None
 
-            if gateway["tenant"]:
-                tenant = Tenant.objects.get(name=gateway["tenant"])
-                if tenant is None:
-                    return None
-                params["tenant"] = tenant
-            params["name"] = gateway['name']
-            return params
+        if gateway["neighbor_as_number"]:
+            params["remote_as"] = self.get_or_create_asn(gateway["neighbor_as_number"])
+        else:
+            return None
+
+        if gateway["tenant"]:
+            tenant = Tenant.objects.get(name=gateway["tenant"])
+            if tenant is None:
+                return None
+            params["tenant"] = tenant
+        params["name"] = gateway['name']
+        return params
 
     def gateway_to_session(self, gateways, vnetc_config):
         for gateway in gateways:
@@ -216,7 +216,7 @@ class VeritySyncView(View):
             session.save()
             session.tags.add(VERITY_TAG_NAME)
             session.save()
-    
+
     def get_netbox_config(self):
         verity_tag = Tag.objects.get(name=VERITY_TAG_NAME)
         if verity_tag is None:
@@ -238,7 +238,7 @@ class VeritySyncView(View):
             "vrfs": vrfs,
             "tenants": tenants
         }
-    
+
     def compare_services(self, vnetc_services, netbox_vlans):
         for service_name, service in vnetc_services.items():
             if service["vlan"] is not None:
@@ -250,7 +250,7 @@ class VeritySyncView(View):
                     vlan = VLAN(
                         vid=service["vlan"],
                         name=service_name
-                    )                
+                    )
                     if service["tenant"] is not None:
                         try:
                             tenant = Tenant.objects.get(name=service["tenant"])
@@ -293,7 +293,7 @@ class VeritySyncView(View):
         for vlan in netbox_vlans:
             if vlan.name not in vnetc_services:
                 vlan.delete()
-    
+
     def compare_vrfs(self, vnetc_tenants, netbox_vrfs):
         for tenant_name, tenant in vnetc_tenants.items():
             try:
@@ -339,8 +339,9 @@ class VeritySyncView(View):
         available_vnetc_vrfs = set(map(lambda x: x["vrf_name"], vnetc_tenants.values()))
         for vrf in netbox_vrfs:
             if vrf.name not in available_vnetc_vrfs:
-                # In Verity a tenant is a vrf, so if the vrf is not in verity anymore we should delete the tenant as well
-                # but given that the tenant could be referenced by other objects in netbox, we need to take care of it at the very end
+                # In Verity a tenant is a vrf, so if the vrf is not in verity anymore we should delete the tenant as
+                # well but given that the tenant could be referenced by other objects in netbox, we need to take care
+                # of it at the very end
                 vrf.delete()
 
     def compare_sessions(self, vnetc_gateways, netbox_sessions, vnetc_config):
@@ -374,7 +375,8 @@ class VeritySyncView(View):
                         netbox_session.remote_as = params_new["remote_as"]
                     netbox_session.save()
                 else:
-                    # The change that happened on the system, can't be reproduced on NetBox, so the object will be deleted
+                    # The change that happened on the system, can't be reproduced on NetBox, so the object will be
+                    # deleted
                     netbox_session.delete()
         # Check objects that have to be deleted because not in the vNetC anymore
         for netbox_session in netbox_sessions:
@@ -395,7 +397,8 @@ class VeritySyncView(View):
                 tenant_tmp.save()
                 tenant_tmp.tags.add(VERITY_TAG_NAME)
                 tenant_tmp.save()
-            # It the tenant already exists we do nothing given that we care about the name only, which was the search key
+            # If the tenant already exists we do nothing given that we care about the name only, which was the search
+            # key
         # Check objects that have to be deleted because not in the vNetC anymore
         for tenant in netbox_tenants:
             if tenant.name not in vnetc_tenants:
@@ -429,13 +432,13 @@ class VeritySyncView(View):
                 # The asn is not referenced by any session, delete it
                 netbox_asn.delete()
 
-
     def compare_config(self, vnetc_config, netbox_config):
         # Let's compare first things that are not referenced by any object type
         # VLANs, VRFs and sessions
         self.compare_services(vnetc_config["service"], netbox_config["vlans"])
         self.compare_vrfs(vnetc_config["tenant"], netbox_config["vrfs"])
-        self.compare_sessions(vnetc_config["gateway"], netbox_config["sessions"], vnetc_config) # Needs to be tested on a system with fully configured gateways
+        # Needs to be tested on a system with fully configured gateways
+        self.compare_sessions(vnetc_config["gateway"], netbox_config["sessions"], vnetc_config)
 
         # Now tenants, that should be deleted, should not be referenced anywhere
         # Tenants that are supposed to be created have already been created if referenced in the new config
@@ -443,11 +446,11 @@ class VeritySyncView(View):
         self.compare_tenants(vnetc_config["tenant"], netbox_config["tenants"])
 
         # Given that verity tagged ip addresses and asns are created for gateways only
-        # the new ones that needed to be created, had already been created, so we just need to remove the ones that are not reference anymore
+        # the new ones that needed to be created, had already been created,
+        # so we just need to remove the ones that are not referenced anymore
         self.compare_ip_addresses(netbox_config["ip_addresses"])
         self.compare_asns(netbox_config["asns"])
 
-    
     def post(self, request):
 
         vnetc = request.POST.get("vnetc")
@@ -488,6 +491,6 @@ class VeritySyncView(View):
                 context["message"] = f"Import failed: {e}"
         else:
             context["success"] = False
-            context["message"] = f"Import failed: Netbox BGP plugin is not installed!"
+            context["message"] = "Import failed: Netbox BGP plugin is not installed!"
 
         return render(request, 'verity_import/sync_result.html', context)

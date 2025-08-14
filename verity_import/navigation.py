@@ -37,7 +37,7 @@ menu_items = (
     ),
 )
 
-# menu = PluginMenu(  
+# menu = PluginMenu(
 #     label="Verity Import",
 #     groups=(("Verity Import", _menu_items),),
 #     icon_class="mdi mdi-bootstrap",

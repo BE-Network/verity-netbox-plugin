@@ -13,7 +13,7 @@ class VeritySource(NetBoxModel):
 
     def __str__(self):
         return f"Controller: {self.pk}"
-    
+
     def get_absolute_url(self):
         return reverse('plugins:verity_import:veritysource', args=[self.pk])
 

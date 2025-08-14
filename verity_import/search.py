@@ -6,7 +6,8 @@ from .models import VeritySource, VeritySourceLogin
 class VeritySourceIndex(SearchIndex):
     model = VeritySource
     fields = (
-        ('verity_url', 100)
+        ('verity_url', 100),
+        ('pk', 5000),
     )
 
 

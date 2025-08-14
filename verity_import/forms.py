@@ -34,7 +34,7 @@ class VeritySourceLoginFilterForm(NetBoxModelFilterSetForm):
     )
     username = forms.CharField(max_length=100)
     password = forms.CharField(max_length=50)
-    
+
 
 class VerityLastSyncTimeForm(NetBoxModelForm):
 
