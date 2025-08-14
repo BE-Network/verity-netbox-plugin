@@ -90,8 +90,9 @@ class VeritySyncView(View):
                     name=service_name
                 )
                 if service["tenant"] is not None:
-                    tenant = Tenant.objects.get(name=service["tenant"])
-                    if tenant is None:
+                    try:
+                        tenant = Tenant.objects.get(name=service["tenant"])
+                    except:
                         raise Exception(f'Tenant {service["tenant"]} referenced by service {service_name} does not exist in Netbox')
                     vlan.tenant = tenant
                 vlan.save()
@@ -144,9 +145,11 @@ class VeritySyncView(View):
         try:
             asn = ASN.objects.get(asn=as_number)
         except ASN.DoesNotExist:
-            rir = RIR.objects.get(name="VerityRIR")
-            if rir is None:
-                raise Exception('RIR VerityRIR not available in Netbox!')
+            try:
+                rir = RIR.objects.get(name="VerityRIR")
+            except:
+                rir = RIR(name="VerityRIR")
+                rir.save()
             asn = ASN(
                 asn=as_number,
                 rir=rir
@@ -200,8 +203,9 @@ class VeritySyncView(View):
             return None
 
         if gateway["tenant"]:
-            tenant = Tenant.objects.get(name=gateway["tenant"])
-            if tenant is None:
+            try:
+                tenant = Tenant.objects.get(name=gateway["tenant"])
+            except:
                 return None
             params["tenant"] = tenant
         params["name"] = gateway['name']
@@ -218,8 +222,9 @@ class VeritySyncView(View):
             session.save()
 
     def get_netbox_config(self):
-        verity_tag = Tag.objects.get(name=VERITY_TAG_NAME)
-        if verity_tag is None:
+        try:
+            verity_tag = Tag.objects.get(name=VERITY_TAG_NAME)
+        except:
             verity_tag = Tag(name=VERITY_TAG_NAME)
             verity_tag.save()
         sessions = BGPSession.objects.filter(tags=verity_tag)
