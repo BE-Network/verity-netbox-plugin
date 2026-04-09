@@ -1,5 +1,23 @@
 # Verity Netbox Plugin
 
+## Security Toolchain
+
+This repository uses a standardized security baseline implemented via GitHub Actions workflows:
+
+- `.github/workflows/security-baseline.yml`
+
+SAST:
+
+- `.github/workflows/codeql.yml`
+
+Dependency update automation:
+
+- `.github/dependabot.yml`
+
+Central standard:
+
+- https://github.com/BE-Network/verity-monitoring/blob/main/SECURITY_TOOLCHAIN_STANDARD.md
+
 ## Verity
 
 Verity is a multivendor network automation platform that automates the provisioning and operation of  data center and campus enterprise networks.
